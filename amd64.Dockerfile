@@ -1,4 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0.100-preview.3-bullseye-slim AS builder
+RUN apt-get update && apt-get install -y clang build-essentials
+
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 WORKDIR /source
 COPY nuget.config nuget.config
@@ -18,12 +20,12 @@ COPY BTCPayServer.Abstractions/. BTCPayServer.Abstractions/.
 COPY BTCPayServer/. BTCPayServer/.
 COPY Build/Version.csproj Build/Version.csproj
 ARG CONFIGURATION_NAME=Release
-RUN cd BTCPayServer && dotnet publish -r linux-x64 --output /app/ --configuration ${CONFIGURATION_NAME}
+RUN cd BTCPayServer && dotnet publish --self-contained -r linux-x64 --output /app/ --configuration ${CONFIGURATION_NAME}
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0.0-preview.3-bullseye-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends iproute2 openssh-client \
-    && rm -rf /var/lib/apt/lists/* 
+    && rm -rf /var/lib/apt/lists/*
 
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
