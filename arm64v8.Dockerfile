@@ -1,5 +1,5 @@
 # This is a manifest image, will pull the image with the same arch as the builder machine
-FROM mcr.microsoft.com/dotnet/sdk:7.0.0-preview.3-bullseye-slim AS builder
+FROM mcr.microsoft.com/dotnet/sdk:7.0.100-preview.3-bullseye-slim AS builder
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 ENV LC_ALL en_US.UTF-8
 
