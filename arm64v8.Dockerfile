@@ -1,9 +1,7 @@
 # This is a manifest image, will pull the image with the same arch as the builder machine
-FROM mcr.microsoft.com/dotnet/sdk:6.0.101-bullseye-slim AS builder
+FROM mcr.microsoft.com/dotnet/sdk:7.0.0-preview.3-bullseye-slim AS builder
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 ENV LC_ALL en_US.UTF-8
-RUN apt-get update \
-	&& apt-get install -qq --no-install-recommends qemu qemu-user-static qemu-user binfmt-support
 
 WORKDIR /source
 COPY nuget.config nuget.config
@@ -23,11 +21,10 @@ COPY BTCPayServer.Abstractions/. BTCPayServer.Abstractions/.
 COPY BTCPayServer/. BTCPayServer/.
 COPY Build/Version.csproj Build/Version.csproj
 ARG CONFIGURATION_NAME=Release
-RUN cd BTCPayServer && dotnet publish --output /app/ --configuration ${CONFIGURATION_NAME}
+RUN cd BTCPayServer && dotnet publish -r linux-arm64 --output /app/ --configuration ${CONFIGURATION_NAME}
 
 # Force the builder machine to take make an arm runtime image. This is fine as long as the builder does not run any program
-FROM mcr.microsoft.com/dotnet/aspnet:6.0.1-bullseye-slim-arm64v8
-COPY --from=builder /usr/bin/qemu-aarch64-static /usr/bin/qemu-aarch64-static
+FROM mcr.microsoft.com/dotnet/aspnet:7.0.0-preview.3-bullseye-slim-arm64v8
 RUN apt-get update && apt-get install -y --no-install-recommends iproute2 openssh-client \
     && rm -rf /var/lib/apt/lists/* 
 
