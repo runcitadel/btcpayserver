@@ -1,5 +1,5 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0.100-preview.3-bullseye-slim AS builder
-RUN apt-get update && apt-get install -y clang build-essentials
+RUN apt-get update && apt-get install -y clang build-essential
 
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 WORKDIR /source

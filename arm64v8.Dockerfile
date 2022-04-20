@@ -2,7 +2,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0.100-preview.3-bullseye-slim AS builder
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 ENV LC_ALL en_US.UTF-8
-RUN apt-get update && apt-get install -y clang build-essentials
+RUN apt-get update && apt-get install -y clang build-essential
 
 WORKDIR /source
 COPY nuget.config nuget.config
